@@ -1,0 +1,13 @@
+.env
+data/pilot.sqlite
+eval/results/
+__pycache__/
+.venv/
+data/pilot_log.jsonl
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.cache/
+.Rhistory
+.RData
+.DS_Store

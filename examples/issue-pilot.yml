@@ -1,0 +1,35 @@
+# 이 파일을 내 저장소의 .github/workflows/issue-pilot.yml 로 복사하세요.
+name: IssuePilot
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 다시 분석할 이슈 번호
+        required: true
+        type: number
+
+permissions: {}
+
+concurrency:
+  group: issue-pilot-${{ github.event.issue.number || inputs.issue_number }}
+  cancel-in-progress: false
+
+jobs:
+  triage:
+    # 봇이 만든 이슈에는 반응하지 않는다.
+    # 공개 저장소에서 비용이 걱정되면 아래 조건을 추가해 저장소 구성원의 이슈만 분석할 수 있다:
+    #   && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association)
+    if: github.event_name == 'workflow_dispatch' || github.event.issue.user.type != 'Bot'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read   # 폴더 목록과 커밋 이력 읽기
+      issues: write    # 라벨과 코멘트 쓰기
+    steps:
+      - uses: Izac626/issuepilot@v1
+        with:
+          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          issue-number: ${{ github.event.issue.number || inputs.issue_number }}

@@ -1,0 +1,79 @@
+id,split,source,title,body,gold_type,gold_labels,gold_priority,gold_duplicate_of,gold_missing_info,gold_affected_path,gold_assignee,note
+1,train,manual,로그인 후 새로고침하면 세션이 풀립니다,"로그인 성공 후 F5를 누르면 다시 로그인 화면으로 돌아갑니다.
+
+재현:
+1. 로그인
+2. 메인 화면에서 F5
+3. 로그인 화면으로 이동
+
+환경: Chrome 129, macOS 15
+기대: 로그인 유지
+실제: 로그아웃됨",bug,backend;auth,P1,,,src/auth,kim-dev,완전한 버그 리포트. 중복 원본 A
+2,train,manual,새로고침하면 로그아웃돼요,페이지 새로고침할 때마다 로그아웃되는데 저만 그런가요? 토큰이 저장이 안 되는 것 같습니다.,bug,backend;auth,P1,1,repro_steps;environment,src/auth,kim-dev,1번의 중복. 정보 누락
+3,train,manual,비밀번호 재설정 메일이 오지 않습니다,비밀번호 찾기에서 이메일을 입력하고 전송을 눌렀는데 메일이 안 옵니다. 스팸함도 확인했습니다. Gmail 사용 중입니다.,bug,backend;auth,P1,,repro_steps;expected_behavior,src/auth,kim-dev,환경 일부만 있음
+4,train,manual,API 응답에 생성일 필드 추가 요청,GET /api/items 응답에 created_at 필드가 없어서 프론트에서 정렬을 못 합니다. ISO 8601 형식으로 추가해 주세요.,feature,backend,P2,,,src/api,kim-dev,명확한 기능 요청
+5,train,manual,items 목록 API에 날짜 정렬이 필요합니다,목록을 최신순으로 보여주고 싶은데 API에서 생성 시간을 내려주지 않아 불가능합니다.,feature,backend,P2,4,,src/api,kim-dev,4번의 중복 (다른 표현)
+6,train,manual,모바일에서 사이드바가 화면을 가립니다,"iPhone 14 Safari에서 사이드바를 열면 닫기 버튼이 화면 밖으로 나가서 닫을 수가 없습니다.
+
+재현: 모바일 Safari → 메뉴 버튼 탭
+기대: 닫기 버튼 보임
+실제: 버튼이 잘림",bug,frontend,P1,,,web,lee-fe,완전한 리포트
+7,train,manual,다크 모드 지원해 주세요,밤에 쓰기 눈이 아픕니다. 시스템 설정 따라가는 다크 모드가 있으면 좋겠습니다.,feature,frontend,P2,,,web,lee-fe,
+8,train,manual,Docker로 실행하는 방법이 README에 없습니다,docker-compose.yml은 있는데 README에 실행 방법 설명이 없어서 처음 보는 사람은 헤맵니다.,docs,docs;infra,P2,,,docs,park-ops,
+9,train,manual,DB 마이그레이션 실행 시 duplicate column 오류,"alembic upgrade head 실행하면 아래 오류가 납니다.
+
+sqlalchemy.exc.OperationalError: duplicate column name: users.created_at
+
+환경: PostgreSQL 15, 로컬 docker
+재현: 깨끗한 DB에서 upgrade head 두 번 실행
+기대: 두 번째는 no-op
+실제: 오류",bug,backend;db,P0,,,src/db,park-ops,P0: 배포 차단
+10,train,manual,마이그레이션 두 번 돌리면 터집니다,upgrade 명령 두 번째부터 column 중복이라고 에러 납니다.,bug,backend;db,P0,9,repro_steps;environment;expected_behavior,src/db,park-ops,9번의 중복. 정보 대부분 누락
+11,train,manual,회원가입 시 이메일 중복 검사가 안 됩니다,"같은 이메일로 두 번 가입이 됩니다. 두 번째 가입 후 로그인하면 첫 번째 계정으로 들어가집니다.
+
+환경: 운영 서버
+재현: 같은 이메일로 가입 2회
+기대: 두 번째 가입 거부
+실제: 가입 성공",bug,backend;auth;db,P0,,,src/auth,kim-dev,보안 영향 P0
+12,train,manual,프로필 사진 업로드 기능,"사용자가 프로필 사진을 올릴 수 있게 해 주세요. 5MB 제한, jpg/png만.",feature,backend;frontend,P2,,,src/api,kim-dev,영역 두 개
+13,train,manual,업로드 용량 제한이 얼마인가요?,파일 업로드할 때 최대 몇 MB까지 되는지 문서에 안 나와 있어서 질문드립니다.,question,docs,P2,,,,,질문. 12번과 비슷하지만 다름(오탐 테스트)
+14,train,manual,CI에서 테스트가 간헐적으로 실패합니다,"GitHub Actions에서 test_session_expiry가 열 번 중 한두 번 실패합니다. 로컬에서는 항상 통과합니다.
+
+환경: ubuntu-latest, Python 3.11
+기대: 항상 통과
+실제: 간헐 실패 (타이밍 의존 추정)",bug,infra;backend,P1,,repro_steps,infra,park-ops,flaky test
+15,train,manual,환경 변수 목록 문서화 요청,필요한 환경 변수가 코드 곳곳에 흩어져 있습니다. .env.example과 설명 표를 docs에 추가해 주세요.,docs,docs,P2,,,docs,park-ops,
+16,train,manual,Rate limit 걸리면 500 에러가 납니다,"외부 API 호출이 rate limit에 걸리면 429가 아니라 500이 내려옵니다.
+
+재현: 1분에 100회 호출
+환경: 운영
+기대: 429 + Retry-After
+실제: 500",bug,backend,P1,,,src/api,kim-dev,
+17,train,manual,429 대신 500 내려오는 문제,요청 많이 보내면 서버 에러 500이 뜨는데 rate limit 응답이 잘못된 것 같습니다.,bug,backend,P1,16,repro_steps;environment;expected_behavior,src/api,kim-dev,16번의 중복
+18,train,manual,검색 결과 페이지네이션,검색 결과가 한 번에 다 나와서 느립니다. 20개씩 페이지네이션 해 주세요.,feature,backend;frontend,P2,,,src/api,kim-dev,
+19,train,manual,검색이 느린데 원인이 뭔가요?,"검색 한 번에 5초 넘게 걸립니다. 인덱스 문제인가요, 아니면 결과가 너무 많아서인가요?",question,backend;db,P2,,,,,18번과 비슷하지만 질문(오탐 테스트)
+20,train,manual,Add Korean translation for error messages,Error messages are only in English. Users in Korea would benefit from localized messages. I can help with translation.,feature,frontend,P2,,,web,lee-fe,영어
+21,test,manual,Crash on startup when config file is missing,"If config.yaml does not exist the app crashes with a stack trace instead of a helpful message.
+
+Steps: delete config.yaml, run `python main.py`
+Env: Python 3.11, Ubuntu 22.04
+Expected: friendly error
+Actual: FileNotFoundError traceback",bug,backend,P1,,,src/api,kim-dev,"영어, 완전한 리포트"
+22,test,manual,App won't start without config,Getting an exception on launch. Something about config. Please fix.,bug,backend,P1,21,repro_steps;environment;expected_behavior;actual_behavior,src/api,kim-dev,21번의 중복. 전부 누락
+23,test,manual,How do I run the tests?,I cloned the repo but could not find instructions for running the test suite. Is it pytest?,question,docs,P2,,,,,영어 질문
+24,test,manual,Typo in CONTRIBUTING.md,"""recieve"" should be ""receive"" in the PR section.",docs,docs,P2,,,docs,,사소한 문서 수정
+25,test,manual,Session cookie not marked Secure in production,"The session cookie is set without the Secure flag, so it can be sent over HTTP.
+
+Env: production, HTTPS
+Expected: Secure; HttpOnly; SameSite=Lax
+Actual: only HttpOnly",bug,backend;auth,P0,,repro_steps,src/auth,kim-dev,"보안 P0, 영어"
+26,test,manual,Export data as CSV,Would be great to download the items table as CSV from the dashboard.,feature,frontend;backend,P2,,,web,lee-fe,영어 기능 요청
+27,test,manual,배포 스크립트가 .env를 덮어씁니다,"deploy.sh 실행하면 서버의 .env가 저장소의 .env.example로 덮어써져서 운영 키가 날아갑니다.
+
+재현: ./deploy.sh prod
+환경: 운영 서버
+기대: .env 유지
+실제: 덮어쓰기",bug,infra,P0,,,infra,park-ops,운영 장애 P0
+28,test,manual,로그인 화면 버튼 색이 디자인과 다릅니다,Figma에서는 #2563EB인데 실제는 #3B82F6입니다. 사소하지만 통일해 주세요.,bug,frontend,P2,,,web,lee-fe,P2 버그
+29,test,manual,Webhook 재시도 정책 추가,외부 webhook 전송 실패 시 재시도가 없습니다. 지수 백오프로 3회 재시도 넣어 주세요.,feature,backend,P1,,,src/api,kim-dev,P1 기능
+30,test,manual,로그인이 가끔 안 됩니다,가끔 로그인 버튼 눌러도 반응이 없습니다. 다시 누르면 됩니다.,bug,frontend;auth,P2,,repro_steps;environment;expected_behavior,web,lee-fe,1번과 비슷하지만 다른 문제(오탐 테스트)

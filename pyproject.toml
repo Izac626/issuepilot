@@ -1,0 +1,37 @@
+[project]
+name = "issuepilot"
+version = "0.3.0"
+description = "LLM 기반 GitHub 이슈 자동 분류·중복 탐지·담당자 추천 에이전트"
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=2.13,<3",
+    "pydantic>=2.14,<3",
+    "PyGithub>=2.10,<3",
+    "python-dotenv>=1.2,<2",
+    "fastembed>=0.9,<1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.8"]
+
+[tool.setuptools.packages.find]
+include = ["issuepilot*"]
+
+[tool.setuptools.package-data]
+"issuepilot.adapters.outbound" = ["prompts/*.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["live: 실제 API를 호출하는 테스트 (RUN_LIVE=1일 때만 실행)"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S"]
+ignore = ["S101", "S603", "S607", "E741"]   # assert(테스트), gh CLI 호출, 짧은 변수명
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S"]
+"eval/*" = ["S"]
