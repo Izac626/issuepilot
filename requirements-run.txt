@@ -1,5 +1,5 @@
 # 실행 환경(GitHub Actions)용 고정 버전. 올릴 때는 테스트와 평가를 다시 돌린다.
-anthropic==2.13.0
+anthropic==2.14.0
 pydantic==2.14.4
 PyGithub==2.10.0
 python-dotenv==1.2.4
