@@ -39,7 +39,6 @@ cp .env.example .env       # ANTHROPIC_API_KEY 입력
 make test                  # 단위 테스트 (API 호출 없음)
 make dry ISSUE=5           # 테스트 저장소 이슈를 게시 없이 분석
 make eval                  # 평가셋 측정 (비용 발생)
-make deploy                # 테스트 저장소에 배포
 ```
 
 ## 구조

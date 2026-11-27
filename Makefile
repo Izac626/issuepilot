@@ -1,6 +1,6 @@
 PY := .venv/bin/python
 
-.PHONY: setup test lint eval eval-test deploy dry
+.PHONY: setup test test-live lint eval eval-test dry
 setup:        ## 가상환경과 의존성 설치
 	python3 -m venv .venv && $(PY) -m pip install -q -e ".[dev]"
 test:         ## 단위 테스트 (API 호출 없음)
@@ -13,7 +13,5 @@ eval:         ## train 평가 (비용 발생)
 	$(PY) eval/run_eval.py --split train
 eval-test:
 	$(PY) eval/run_eval.py --split test
-deploy:       ## 테스트 저장소에 배포
-	scripts/deploy_to_testbed.sh
 dry:          ## make dry ISSUE=5
 	$(PY) -m issuepilot --repo Izac626/issuepilot-testbed --issue $(ISSUE) --dry-run
