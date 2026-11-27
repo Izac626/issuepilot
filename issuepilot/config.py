@@ -19,7 +19,7 @@ class Settings:
     model: str = "claude-opus-5-5"
     effort: str = "low"
     max_retries: int = 2
-    max_output_tokens: int = 16000
+    max_output_tokens: int = 4000   # 실측 최대 약 400. 출력 팽창 유도에 대비한 상한
     # 비용과 프롬프트 크기 상한. 넘는 부분은 잘라내고 코멘트에 알린다.
     max_title_chars: int = 300
     max_body_chars: int = 8000

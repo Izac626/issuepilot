@@ -14,6 +14,20 @@ EXPAND_DIRS = {"src", "app", "apps", "packages", "lib"}   # 한 단계 더 펼�
 SKIP_DIRS = {"tests", "test", "node_modules"}
 MAX_EXISTING_BODY_CHARS = 2000
 MAX_SCANNED_ISSUES = 300   # PR이 섞여 나오므로 limit보다 넉넉히 훑되 상한을 둔다
+TRUSTED_ASSOCIATIONS = {"OWNER", "MEMBER", "COLLABORATOR"}
+
+
+def is_own_comment(comment, marker: str) -> bool:
+    """IssuePilot이 쓴 코멘트인가. 마커는 누구나 적을 수 있으므로 작성자도 확인한다.
+
+    기본 토큰이면 봇 계정, 개인 토큰이면 저장소 구성원이 작성자다. 외부인이 마커를
+    흉내 낸 코멘트를 갱신 대상으로 삼지 않는다.
+    """
+    if not (comment.body or "").startswith(marker):
+        return False
+    if comment.user.type == "Bot":
+        return True
+    return comment.raw_data.get("author_association") in TRUSTED_ASSOCIATIONS
 
 
 def github_token() -> str:
@@ -88,7 +102,7 @@ class GitHubIssueTracker:
 
     def upsert_comment(self, issue_number: int, body: str, marker: str) -> None:
         gh_issue = self._repo.get_issue(issue_number)
-        existing = next((c for c in gh_issue.get_comments() if marker in (c.body or "")), None)
+        existing = next((c for c in gh_issue.get_comments() if is_own_comment(c, marker)), None)
         if existing:
             existing.edit(body)
         else:
